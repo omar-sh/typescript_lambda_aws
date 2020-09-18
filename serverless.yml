@@ -1,0 +1,66 @@
+
+service: typescript
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: '1'
+
+plugins:
+  - serverless-plugin-test-helper
+
+custom:
+  testHelper:
+    path: .stack-outputs.yml
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      Resource: "*"
+
+resources:
+  Resources:
+    ReservatioTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: "ReservationTable"
+        AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+        KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
+
+functions:
+  createReservation:
+    handler: built/endpoints/create.handler
+    events:
+    - http:
+        path: reservation/create
+        method: post
+  updateReservation:
+    handler: built/endpoints/update.handler
+    events:
+    - http:
+        path: reservation/update/{id}
+        method: put
+  getReservation:
+    handler: built/endpoints/get.handler
+    events:
+    - http:
+        path: reservation/get/{id}
+        method: get

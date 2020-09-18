@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "CommonJS",
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "outDir": "./built",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "ES5"
+  },
+  "include": ["src-ts/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+  "lib": ["dom", "es2015", "es5", "es6", "experimentalDecorators"]
+}
